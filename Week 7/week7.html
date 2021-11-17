@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Weather App</title>
+
+<link rel="stylesheet" href="css_js\week7.css">
+
+  </head>
+  <body>
+
+    <section>
+      <h1 id="city">Weather Where You Are</h1>
+      <p><span id="temperature"></span> <span id="weather">by Marco Grant</span></p>
+    </section>
+
+    <footer>
+      <p>
+        Powered by <a href="http://flickr.com/services/api">Flickr</a> and
+        <a href="http://openweathermap.org">Open Weather Map</a>.
+      </p>
+    </footer>
+
+
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+
+//IP INFO
+
+      $.getJSON("https://ipinfo.io", function (data) {
+  console.log(data);
+  var location = data.loc.split(",");
+  getWeather(location[0], location[1], data.city);
+});
+
+//WEATHER
+
+$.ajax({
+  url: "https://api.openweathermap.org/data/2.5/weather",
+  data: {
+    lat: lat,
+    lon: lon,
+    APPID: "faa5f3cbac49209a59c3a86dfeb48128",
+    units: "metric",
+  },
+  success: function onSuccess(result) {
+  $("#city").html(city);
+  $("#temperature").html(result.main.temp + "&deg");
+  $("#weather").html(result.weather[0].main);
+
+  getPhoto(lat, lon, result.weather[0].main);
+},
+  error: function onError(error) {
+    // handle any errors
+  },
+});
+
+//IMAGE
+
+
+
+$.ajax({
+  url: "https://api.flickr.com/services/rest/",
+  data: {
+    method: "flickr.photos.search",
+    api_key: "YOUR-API-KEY",
+    format: "json",
+    extras: "url_l",
+    lat: lat,
+    lon: lon,
+    tags: weather,
+    per_page: 1,
+    has_geo: 1,
+    radius: 20,
+  },
+  success: function onSuccess(result) {
+    // handle the result
+  },
+});
+
+
+
+  success: function onSuccess(result) {
+    $("#runFlickrScript").html(result);
+  },
+
+
+
+jsonFlickrApi = (data) => {
+  console.log("DATA", data);
+  $("body").css("background-image", "url(" + data.photos.photo[0].url_l + ")");
+};
+
+
+    </script>
+
+  </body>
+</html>
